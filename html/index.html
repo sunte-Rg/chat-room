@@ -1,46 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <title>my 聊天室</title>
 </head>
-
+<style>
+    html,body,div,img,p,input,span{
+        margin:0;padding:0;
+    }
+    #chatRoom{padding:0 .2rem;}
+    .page{width:0%;overflow: hidden;float: left;white-space:nowrap;
+        transition: width .3s linear;
+        /* Safari */
+        -webkit-transition:width .3s linear;
+    }
+    .title{
+        width:100%;
+        font-size:.8rem ;
+        background: deepskyblue;
+        color:#FFFFFF;
+        text-align: center;
+    }
+    .__prompt_info{
+    width: 50%;
+    display:none;
+    position: fixed;
+    left: 25%;
+    text-align: center;
+    background: grey;
+    color: #FFFFFF;
+    padding: 1%;
+    bottom: 5%;
+    border-radius: .3rem;
+    -webkit-border-radius: .3rem;
+    opacity: 0.8;
+    }
+    #back{float:left;}
+    #title{ font-size:.5rem ;   }
+</style>
 <body>
-<div id ="content">
+<div class = "title">
+    <span id = "back"> &lt; </span>
+    <span id = "title">首页</span>
+</div>
+<div id = "chatRoom" style = "display: none">
+    <div id = "main_page" class = "page">
+        <h1>我的聊天室</h1>
+        <button id = "login">登录</button>
+        <button id = "register">注册</button>
+    </div>
+    <div id = "login_page" class = "page">
+        <h1>登录页面</h1>
+        <input maxlength="12" id = "loginUserName" type="input" v-model="username"/><input @click="login" id = "sub_login" type="button" value="登 录" />
+    </div>
+    <div id = "register_page" class = "page">
+        <h1>注册页面</h1>
+        <input maxlength="12" id = "registerUserName"  v-model="username" type="input"/><input @click="register"  id = "sub_register" type="button" value="注 册" />
+    </div>
 
+    <div id = "chat_page" class = "page">
+        <div id ="content">
+            <p v-for="info in chatInfo" :key="$index">
+                <span>{{info.username}}</span>
+            </p>
+        </div>
+        <textarea id = "send_content"></textarea>
+        <input type="button" id = "send" value="发送" />
+    </div>
 </div>
 
-<textarea id = "send_content"></textarea>
-<input type="button" id = "send" value="发送" />
-<script src="/socket.io/socket.io.js"></script>
-<script type="text/javascript">
-
-    //flexible
-    !function(a,b){function c(){console.log("base:flexible1");var b=f.getBoundingClientRect().width;b/i>540&&(b=540*i);var c=b/9;f.style.fontSize=c+"px",k.rem=a.rem=c;console.log("base:flexible2");}var d,e=a.document,f=e.documentElement,g=e.querySelector('meta[name="viewport"]'),h=e.querySelector('meta[name="flexible"]'),i=0,j=0,k=b.flexible||(b.flexible={});if(g){console.warn("将根据已有的meta标签来设置缩放比例");var l=g.getAttribute("content").match(/initial\-scale=([\d\.]+)/);l&&(j=parseFloat(l[1]),i=parseInt(1/j))}else if(h){var m=h.getAttribute("content");if(m){var n=m.match(/initial\-dpr=([\d\.]+)/),o=m.match(/maximum\-dpr=([\d\.]+)/);n&&(i=parseFloat(n[1]),j=parseFloat((1/i).toFixed(2))),o&&(i=parseFloat(o[1]),j=parseFloat((1/i).toFixed(2)))}}if(!i&&!j){var p=a.navigator.userAgent,q=(!!p.match(/android/gi),!!p.match(/iphone/gi)),r=q&&!!p.match(/OS 9_3/),s=a.devicePixelRatio;i=q&&!r?s>=3&&(!i||i>=3)?3:s>=2&&(!i||i>=2)?2:1:1,j=1/i}if(f.setAttribute("data-dpr",i),!g)if(g=e.createElement("meta"),g.setAttribute("name","viewport"),g.setAttribute("content","initial-scale="+j+", maximum-scale="+j+", minimum-scale="+j+", user-scalable=no"),f.firstElementChild)f.firstElementChild.appendChild(g);else{var t=e.createElement("div");t.appendChild(g),e.write(t.innerHTML)}a.addEventListener("resize",function(){clearTimeout(d),d=setTimeout(c,300)},!1),a.addEventListener("pageshow",function(a){a.persisted&&(clearTimeout(d),d=setTimeout(c,300))},!1),"complete"===e.readyState?e.body.style.fontSize=12*i+"px":e.addEventListener("DOMContentLoaded",function(){e.body.style.fontSize=12*i+"px"},!1),c(),k.dpr=a.dpr=i,k.refreshRem=c,k.rem2px=function(a){var b=parseFloat(a)*this.rem;return"string"==typeof a&&a.match(/rem$/)&&(b+="px"),b},k.px2rem=function(a){var b=parseFloat(a)/this.rem;return"string"==typeof a&&a.match(/px$/)&&(b+="rem"),b}}(window,window.lib||(window.lib={}));
-
-    var socket = io.connect();
-    document.getElementById("send").onclick = function(){
-        var param = {
-            username:"逗逼",
-            content:document.getElementById("send_content").value
-        }
-        socket.emit("test",param);
-        document.getElementById("send_content").value="";
-    }
-
-
-    var content_ele = document.getElementById("content");
-    socket.on("system_notice",function(data){
-        console.log(data);
-        var chat_str = "";
-        for(var chat in data){
-           chat = data[chat];
-            chat_str+= ("<p>"+chat.username+" : "+ chat.content +"</p>");
-        }
-        content_ele.innerHTML = chat_str;
-    })
-
-
-</script>
 </body>
+<script type="text/javascript" src="./js/thirdParty/require.js" data-main="/js/main"></script>
 </html>
