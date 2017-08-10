@@ -11,6 +11,7 @@ require.config({
         "vue": "thirdParty/vue",
         "socket":"/socket.io/socket.io",
         "toask":"lib/toask",
+        "page":"lib/page",
         "chatRoom": "chatRoom"
     }
 });

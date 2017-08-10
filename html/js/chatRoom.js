@@ -1,11 +1,16 @@
 /**
  * Created by family-rg on 2017/7/20.
  */
-define(['vue','socket','toask'],function(Vue,Socket,Toask){
+define(['vue','socket','toask','page'],function(Vue,Socket,Toask,PageUtil){
 
     var ChatRoom = function (){
         this.socket = Socket.connect();
         this.toask  = new Toask();
+        this.pageUtil  = new PageUtil({
+                MAIN:{id:"main_page",title:"首页"},
+                LOGIN:{id:"login_page",title:"用户登录"},
+                REGISTER:{id:"register_page",title:"用户注册"}
+        });
         this.userInfo = {
             username:"",
             token:""
@@ -87,7 +92,7 @@ define(['vue','socket','toask'],function(Vue,Socket,Toask){
         });
         self.initEvent();
 
-        goToPage(PAGE.MAIN);
+        self.pageUtil.goToPage(self.pageUtil.pageName.MAIN);
         document.getElementById("main_page").style.width="100%";
     }
 
@@ -147,40 +152,4 @@ define(['vue','socket','toask'],function(Vue,Socket,Toask){
         document.getElementById("send_content").value="";
     }
     return  ChatRoom ;
-})
-
-
-var PAGE = {
-    MAIN:{id:"main_page",title:"首页"},
-    LOGIN:{id:"login_page",title:"用户登录"},
-    REGISTER:{id:"register_page",title:"用户注册"}
-}
-
-var pageHistory = [];
-function goToPage(nextPage){
-    var nowPage = pageHistory.length>0?pageHistory[pageHistory.length-1]:undefined;
-    var nowPageEle = nowPage?document.getElementById(nowPage.id):nowPage;
-    var nextPageEle = document.getElementById(nextPage.id);
-    if(nowPageEle){
-        nowPageEle.style.width="0%";
-    }
-    if(nextPageEle){
-        nextPageEle.style.width="100%";
-    }
-    document.getElementById("title").innerText =nextPage.title;
-    pageHistory.push(nextPage);
-}
-function backPage(){
-    if(pageHistory.length<=1) return ;
-    var backPage = pageHistory.pop();
-    var showPage = pageHistory[pageHistory.length-1];
-    var backPageEle = document.getElementById(backPage.id);
-    var showPageEle = document.getElementById(showPage.id);
-    document.getElementById("title").innerText =showPage.title;
-    if(backPageEle){
-        backPageEle.style.width="0%";
-    }
-    if(showPageEle){
-        showPageEle.style.width="100%";
-    }
-}
+});

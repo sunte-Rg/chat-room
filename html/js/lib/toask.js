@@ -2,9 +2,9 @@
  * Created by family-rg on 2017/7/29.
  */
 (function(global,factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-        typeof define === 'function' && define.amd ? define(factory) :
-            (global.Vue = factory());
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : //cmd
+        typeof define === 'function' && define.amd ? define(factory) : //amd
+            (global.Vue = factory()); //window
 }(this,function(){
 
     var Toask = function(){
