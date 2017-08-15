@@ -6,10 +6,9 @@ var HttpHandle = function(){
     this.url = require("url");  //url处理
     this.exec = require("child_process").exec;//非阻塞操作：exec
     this.express = require("express");
+    this.bodyParser = require('body-parser');
     this.app=null;
     this.server=null;
-    this.reqData = "";
-    this.pathHandle = {}; //path对应的处理fun
 }
 
 HttpHandle.prototype.init =function() {
@@ -33,6 +32,11 @@ HttpHandle.prototype.init =function() {
     // }).listen(port);
     self.app = self.express();
     self.server = self.http.createServer(self.app);
+
+    // parse application/x-www-form-urlencoded
+    self.app.use(self.bodyParser.urlencoded({extended: false}))
+    // parse application/json
+    self.app.use(self.bodyParser.json())
 }
 
 HttpHandle.prototype.start= function(port){
@@ -40,13 +44,5 @@ HttpHandle.prototype.start= function(port){
     self.server.listen(port);
 }
 
-HttpHandle.prototype.route = function(path){
-    var self = this;
-    if( typeof  self.pathHandle[path] =="function"){
-        return self.pathHandle[path]();
-    }else{
-       return  "<h2 style ='color:red;'>This "+ path+" 404</h2>";
-    }
-}
 
 exports.HttpHandle = HttpHandle ;

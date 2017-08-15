@@ -4,7 +4,7 @@
 (function(global,factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : //cmd
         typeof define === 'function' && define.amd ? define(factory) : //amd
-            (global.Vue = factory()); //window
+            (global.Toask = factory()); //window
 }(this,function(){
 
     var Toask = function(){

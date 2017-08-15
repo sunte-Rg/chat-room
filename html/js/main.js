@@ -8,6 +8,7 @@ require.config({
 
     baseUrl: "js",
     paths: {
+        "jquery": "thirdParty/jquery",
         "vue": "thirdParty/vue",
         "socket":"/socket.io/socket.io",
         "toask":"lib/toask",

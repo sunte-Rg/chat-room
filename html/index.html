@@ -10,10 +10,10 @@
         margin:0;padding:0;
     }
     #chatRoom{padding:0 .2rem;}
-    .page{width:0%;overflow: hidden;float: left;white-space:nowrap;
-        transition: width .3s linear;
-        /* Safari */
-        -webkit-transition:width .3s linear;
+    .page{/*overflow: hidden;float: left;white-space:nowrap;*/  display: none;margin-top:1rem;
+        /*transition: width .3s linear;*/
+        /*!* Safari *!*/
+        /*-webkit-transition:width .3s linear;*/
     }
     .title{
         width:100%;
@@ -21,6 +21,9 @@
         background: deepskyblue;
         color:#FFFFFF;
         text-align: center;
+        position: fixed;
+        top:0;
+        left:0;
     }
     .__prompt_info{
     width: 50%;
@@ -38,6 +41,40 @@
     }
     #back{float:left;}
     #title{ font-size:.5rem ;   }
+
+    .online_num{
+        background-color: lightskyblue;
+        position:fixed;
+        top: 1.1rem;
+        left:0;
+        color:#FFFFFF;
+    }
+    .message_window{
+        padding: 1rem 0 ;
+    }
+    .message_window .message_new{
+        font-size:.5rem;
+        margin:.2rem auto ;
+    }
+
+    .message_send{
+        width:100%;
+        height:1rem;
+        position: fixed;;
+        bottom: 0;
+        left:0;
+    }
+
+    .message_send  .message_input{
+        width:80%;
+        height:100%;
+    }
+    .message_send  .send_btn{
+
+        width:17%;
+        height:100%;
+    }
+
 </style>
 <body>
 <div class = "title">
@@ -52,21 +89,25 @@
     </div>
     <div id = "login_page" class = "page">
         <h1>登录页面</h1>
-        <input maxlength="12" id = "loginUserName" type="input" v-model="username"/><input @click="login" id = "sub_login" type="button" value="登 录" />
+        <input maxlength="8" id = "loginUserName" type="input" v-model="username"/><input @click="login" id = "sub_login" type="button" value="登 录" />
     </div>
     <div id = "register_page" class = "page">
         <h1>注册页面</h1>
-        <input maxlength="12" id = "registerUserName"  v-model="username" type="input"/><input @click="register"  id = "sub_register" type="button" value="注 册" />
+        <input maxlength="8" id = "registerUserName"  v-model="username" type="input"/><input @click="register"  id = "sub_register" type="button" value="注 册" />
     </div>
 
     <div id = "chat_page" class = "page">
-        <div id ="content">
-            <p v-for="info in chatInfo" :key="$index">
-                <span>{{info.username}}</span>
+        <p class="online_num">在线人数 ：（<span>{{onlineNum}}</span>）</p>
+        <div id ="content" class = "message_window">
+            <p class = "message_new" v-for="info in chatInfo">
+                <span>{{info.username}}：</span>
+                <span>{{info.content}}</span>
             </p>
         </div>
-        <textarea id = "send_content"></textarea>
-        <input type="button" id = "send" value="发送" />
+        <div class = "message_send">
+            <input id = "send_content" class = "message_input"  v-model="sendContent" type="text">
+            <input type="button" id = "send" value="发送"  class = "send_btn"  @click="sendMessage"  />
+        </div>
     </div>
 </div>
 

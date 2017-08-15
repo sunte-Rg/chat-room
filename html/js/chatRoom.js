@@ -1,16 +1,12 @@
 /**
  * Created by family-rg on 2017/7/20.
  */
-define(['vue','socket','toask','page'],function(Vue,Socket,Toask,PageUtil){
+define(['vue','socket','toask','page','jquery'],function(Vue,Socket,Toask,PageUtil,$){
 
     var ChatRoom = function (){
-        this.socket = Socket.connect();
+        this.socket;
         this.toask  = new Toask();
-        this.pageUtil  = new PageUtil({
-                MAIN:{id:"main_page",title:"首页"},
-                LOGIN:{id:"login_page",title:"用户登录"},
-                REGISTER:{id:"register_page",title:"用户注册"}
-        });
+        this.pageUtil  = new PageUtil();
         this.userInfo = {
             username:"",
             token:""
@@ -21,18 +17,36 @@ define(['vue','socket','toask','page'],function(Vue,Socket,Toask,PageUtil){
 
     ChatRoom.prototype.initApp = function(){
         var self  = this ;
+       self.pageUtil.init({
+           page: {
+               MAIN: {id: "main_page", title: "首页"},
+               LOGIN: {id: "login_page", title: "用户登录"},
+               REGISTER: {id: "register_page", title: "用户注册"},
+               INDEX:{id:"chat_page",title:"聊天室",callBack:function(){
+                   self.socket.disconnect(self.vue.username);
+               }}
+           }, titleId: "title"
+       });
+
         self.vue = new Vue({
             el: "#chatRoom",
             data: {
                chatInfo:[],
-                username:""
+                username:"",
+                sendContent:"",
+                onlineNum:0
             },
             methods:{
                 login:function(){
-                    console.log("loin");
+                   self.login();
                 },
-                register:function(){},
-
+                register:function(){
+                    self.register();
+                },
+                sendMessage:function(){
+                    self.sendMessage();
+                    this.sendContent = "";
+                }
             },
             beforeCreate: function () {
                 // console.group('beforeCreate 创建前状态===============》');
@@ -91,65 +105,99 @@ define(['vue','socket','toask','page'],function(Vue,Socket,Toask,PageUtil){
             }
         });
         self.initEvent();
-
-        self.pageUtil.goToPage(self.pageUtil.pageName.MAIN);
-        document.getElementById("main_page").style.width="100%";
+        self.pageUtil.goToPage(self.pageUtil.page.MAIN);
     }
 
     ChatRoom.prototype.initEvent = function(){
         var self = this ;
 
         document.getElementById("back").onclick = function(){
-            backPage();
+            self.pageUtil.backPage();
         }
 
         //click login
         document.getElementById("login").onclick = function(){
-            self.login();
+            self.pageUtil.goToPage(self.pageUtil.page.LOGIN);
         }
-
 
         //click register
         document.getElementById("register").onclick = function(){
-            self.register();
+            self.pageUtil.goToPage(self.pageUtil.page.REGISTER);
         }
-        //发送消息按钮
-        document.getElementById("send").onclick = function(){
-            self.sendMessage();
-        }
-
         var content_ele = document.getElementById("content");
-
-        self.socket.on("system_notice",function(data){
-            console.log(data);
-            var chat_str = "";
-            for(var chat in data){
-                chat = data[chat];
-                chat_str+= ("<p>"+chat.username+" : "+ chat.content +"</p>");
-            }
-            content_ele.innerHTML = chat_str;
-        })
-
-
     }
 
     ChatRoom.prototype.register = function(){
-        goToPage(PAGE.REGISTER);
+        var self = this ;
+        var requestParam = {
+            username:self.vue.username
+        }
+        $.ajax({
+            type: 'POST',
+            url: "/sub_register",
+            dataType: "json",
+            data: requestParam,
+            success: function(result){
+                if(result.code == "000000"){
+                    self.pageUtil.backPage();
+                    self.initChatRoom();
+                    self.pageUtil.goToPage(self.pageUtil.page.INDEX);
+                }else
+                    self.toask.info(result.content,1500);
+            }
+        });
     }
 
     ChatRoom.prototype.login = function(){
-        goToPage(PAGE.LOGIN);
+        var self = this ;
+        var requestParam = {
+            username:self.vue.username,
+            test:"test"
+        }
+        $.ajax({
+            type: 'POST',
+            url: "/sub_login",
+            dataType: "json",
+            data: requestParam,
+            success: function(result){
+                if(result.code == "000000"){
+                    self.pageUtil.backPage();
+                    self.initChatRoom();
+                    self.pageUtil.goToPage(self.pageUtil.page.INDEX);
+                }else
+                    self.toask.info(result.content,1500);
+            }
+        });
+    }
 
+    ChatRoom.prototype.initChatRoom = function(){
+        var self = this ;
+        self.socket = Socket.connect();
+        self.socket.on('connect', function () {
+            self.toask.info('已连接聊天室！');
+
+            self.socket.emit("session",self.vue.username)
+
+            self.socket.on('disconnect', function () {
+                self.toask.info('已与聊天室失去连接！');
+                self.pageUtil.backPage();
+            });
+        });
+        self.socket.on("message_notice",function(data){
+            self.vue.chatInfo.push(data);
+        })
+        self.socket.on("onlineNum_notice",function(data){
+            self.vue.onlineNum = data*1 /2 ;
+        })
     }
 
     ChatRoom.prototype.sendMessage = function(){
         var self = this ;
         var param = {
-            userInfo:self.userInfo,
-            content:document.getElementById("send_content").value
+            username:self.vue.username,
+            content:self.vue.sendContent
         }
         self.socket.emit("sendMessage",param);
-        document.getElementById("send_content").value="";
     }
     return  ChatRoom ;
 });

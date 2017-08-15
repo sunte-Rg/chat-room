@@ -4,11 +4,11 @@
 (function(global,factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() : //cmd
         typeof define === 'function' && define.amd ? define(factory) : //amd
-            (global.Vue = factory()); //window
+            (global.Page = factory()); //window
 }(this,function() {
 
     var Page = function () {
-        this.pageName ; //  Example  {  MAIN:{id:"main_page",title:"index"} }
+        this.page ; //  Example  {  MAIN:{id:"main_page",title:"index",callFun:function(){}} }
         this.pageState = 0;  // 0 : 未初始化  1：初始化成功，正常显示页面  2:页面切换中
         this.pageHistory = [];//页面历史记录，勿改动
         this.titleId = '';//显示title的id
@@ -17,8 +17,9 @@
     Page.prototype.init = function(param){
         if(!param) return ;
         var self = this ;
-        self.pageName = param.pageName;
+        self.page = param.page;
         self.titleId = param.titleId;
+        return self;
     }
 
     Page.prototype.goToPage = function (nextPage) {
@@ -31,10 +32,10 @@
         var nowPageEle = nowPage ? document.getElementById(nowPage.id) : nowPage;
         var nextPageEle = document.getElementById(nextPage.id);
         if (nowPageEle) {
-            nowPageEle.style.width = "0%";
+            nowPageEle.style.display="none";
         }
         if (nextPageEle) {
-            nextPageEle.style.width = "100%";
+            nextPageEle.style.display="block";
         }
         document.getElementById(self.titleId).innerText = nextPage.title;
         pageHistory.push(nextPage);
@@ -44,15 +45,16 @@
         var self = this, pageHistory = self.pageHistory;
         if (pageHistory.length <= 1) return;
         var backPage = pageHistory.pop();
+        if( typeof backPage.callBack == 'function')backPage.callBack();
         var showPage = pageHistory[pageHistory.length - 1];
         var backPageEle = document.getElementById(backPage.id);
         var showPageEle = document.getElementById(showPage.id);
         document.getElementById(self.titleId).innerText = showPage.title;
         if (backPageEle) {
-            backPageEle.style.width = "0%";
+            backPageEle.style.display="none";
         }
         if (showPageEle) {
-            showPageEle.style.width = "100%";
+            showPageEle.style.display="block";
         }
     }
     return Page;
