@@ -25,17 +25,14 @@ httpHandle.app.post("/sub_login",function(req,res) {
             content: "该账号不存在！"
         });
     } else if (!!nowUser) {//用户已登录
-        console.log("已登录");
         responseResult.setResult({
             code: "0000002",
             content: "该账号已经登录！"
         })
     }
-    console.log(JSON.stringify(responseResult.getResult()));
     res.send(responseResult.getResult());
 
 });
-
 
 httpHandle.app.post("/sub_register",function(req,res){
     var username = req.body.username;
@@ -57,16 +54,10 @@ httpHandle.app.post("/sub_register",function(req,res){
     }
     return jsonLen;
 }
-
-
 io.on("connection",function(scoket){
-    console.log("用户已经连接");
-
-
     scoket.on("session",function(username){
-        console.log(username+"用户session 保存");
-        onLine[username] = scoket //注册后自动登录
-        onLine[scoket] = username //注册后自动登录
+        onLine[username] = scoket.id //注册后自动登录
+        onLine[scoket.id] = username //注册后自动登录
         //调用通知事件
         io.sockets.emit("onlineNum_notice",getLength(onLine));
     });
@@ -74,13 +65,10 @@ io.on("connection",function(scoket){
         io.sockets.emit("message_notice",data)
     });
 
-
-
     scoket.on("disconnect",function(){
-        console.log(onLine[scoket]+"用户已断开连接");
 
-        delete  onLine[onLine[scoket]] //注册后自动登录
-        delete  onLine[scoket] //注册后自动登录
+        delete  onLine[onLine[scoket.id]] //注册后自动登录
+        delete  onLine[scoket.id] //注册后自动登录
         io.sockets.emit("onlineNum_notice",getLength(onLine));
     });
 

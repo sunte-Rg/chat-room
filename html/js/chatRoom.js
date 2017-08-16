@@ -38,10 +38,16 @@ define(['vue','socket','toask','page','jquery'],function(Vue,Socket,Toask,PageUt
             },
             methods:{
                 login:function(){
-                   self.login();
+                    if (!this.username)
+                        self.toask.info("请输入您的登录用户名！", 1000);
+                    else
+                        self.login();
                 },
-                register:function(){
-                    self.register();
+                register:function() {
+                    if (!this.username)
+                        self.toask.info("请输入您的注册用户名！", 1000);
+                    else
+                        self.register();
                 },
                 sendMessage:function(){
                     self.sendMessage();
@@ -193,6 +199,7 @@ define(['vue','socket','toask','page','jquery'],function(Vue,Socket,Toask,PageUt
 
     ChatRoom.prototype.sendMessage = function(){
         var self = this ;
+        if(!self.vue.sendContent) return ;
         var param = {
             username:self.vue.username,
             content:self.vue.sendContent

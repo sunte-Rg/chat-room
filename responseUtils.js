@@ -16,7 +16,6 @@ var ResponseUtils = function(){
 
 ResponseUtils.prototype.setResult = function(param){
     var self = this;
-    console.log(self.code);
     self.code = !param.code?self.code:param.code;
     self.content = !param.content?self.content:param.content;
     self.result = !param.result?self.result:param.result;

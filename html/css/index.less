@@ -1,3 +1,74 @@
 @charset "utf-8";
 @import "less_util/util";
+#chatRoom{padding:0 .2rem;}
+.page{ display: none;margin-top:1.2rem;  }
+.title{
+  .position_fi(0,auto,auto,0);
+  width:100%;
+  font-size:.8rem ;
+  background: #00BFFF;
+  color:#FFFFFF;
+  text-align: center;
+}
+#back{float:left;}
+#title{ font-size:.5rem ;   }
 
+.logo{
+  .ele_size(3rem,auto);
+}
+.btn{
+  .border(whole,#00BFFF,1px);
+  .ele_size(2rem,1rem);
+  color:#ffffff;
+  background-color: #00BFFF;
+}
+.input_wrap{
+  & .input_text{
+    .border(whole,#00BFFF,1px);
+    .ele_size(60%,1rem);
+  }
+  & .btn{
+    .ele_size(30%,1rem);
+    margin-left:-.1rem;
+  }
+}
+
+.main_page{
+  text-align: center;
+}
+.login_page{
+  text-align: center;
+}
+.register_page{
+  text-align: center;
+}
+
+.chat_page{
+  & .online_num{
+    .position_fi(1.1rem,auto,auto,0);
+    background-color: #00BFFF;
+    color:#FFFFFF;
+  }
+  & .message_window{
+    padding: 1rem 0 ;
+  }
+  & .message_window .message_new{
+    font-size:.5rem;
+    margin:.2rem auto ;
+  }
+  & .message_send{
+    .ele_size(100%,1rem);
+    .position_fi(auto,auto,0,0);
+  }
+
+  & .message_send  .message_input{
+    .border(whole,#00BFFF,1px);
+    .ele_size(80%,100%);
+  }
+  & .message_send  .send_btn{
+    .border(whole,#FFF,0);
+    .ele_size(17%,100%);
+    color:#ffffff;
+    background-color: #00BFFF;
+  }
+}
