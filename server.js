@@ -13,23 +13,6 @@ var HttpHandle = function(){
 
 HttpHandle.prototype.init =function() {
     var self = this;
-    // self.http.createServer(function(req,resp){
-    //     self.reqData = "";
-    //     req.setEncoding("utf8");
-    //     req.addListener("data", function(chunk) {  //获取req传递的数据
-    //         // called when a new chunk of data was received
-    //         console.log("req传递数据："+chunk);
-    //         self.reqData +=chunk ;
-    //     });
-    //
-    //     req.addListener("end", function() {   //req 数据获取完成
-    //         // called when all chunks of data have been received
-    //         console.log("req数据获取完成："+self.reqData);
-    //         callFun(req,resp, self.url.parse(req.url).pathname);
-    //         resp.end();
-    //     });
-    //
-    // }).listen(port);
     self.app = self.express();
     self.server = self.http.createServer(self.app);
 

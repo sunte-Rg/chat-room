@@ -99,6 +99,7 @@ img {
   padding: 1rem 0 ;
 }
 .chat_page .message_window .message_new {
+  word-break: break-all;
   font-size: .5rem;
   margin: .2rem auto ;
 }
@@ -108,7 +109,7 @@ img {
   position: fixed;
   top: auto;
   right: auto;
-  bottom: 0;
+  bottom: 0.1rem;
   left: 0;
 }
 .chat_page .message_send .message_input {
